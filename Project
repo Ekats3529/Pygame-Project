@@ -1,0 +1,38 @@
+import pygame
+pygame.init()
+import os
+
+
+def load_image(name, colorkey=None):
+    fullname = os.path.join('data', name)
+    try:
+        image = pygame.image.load(fullname)
+        image = image.convert_alpha()
+        if colorkey is not None:
+            if colorkey is -1:
+                colorkey = image.get_at((0, 0))
+            image.set_colorkey(colorkey)
+        return image
+    except pygame.error as message:
+        print('Cannot load image:', name)
+        raise SystemExit(message)
+
+
+size = width, height = 1000, 600
+screen = pygame.display.set_mode(size)
+image = load_image("platform.png")
+pygame.mouse.set_visible(False)
+coords = pygame.mouse.get_pos()
+x = coords[0]
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        elif event.type == pygame.MOUSEMOTION:
+            x = event.pos[0]
+        coords = (x, 561)
+        screen.blit(image, coords)
+        pygame.display.flip()
+        screen.fill((0, 0, 0))
+pygame.quit()
